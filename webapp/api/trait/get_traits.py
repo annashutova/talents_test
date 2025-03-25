@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from starlette import status
 
 from webapp.api.trait.router import trait_router
+from webapp.auth.jwt import JwtTokenT, jwt_auth
 from webapp.crud.trait import get_traits
 from webapp.db.postgres import get_session
 from webapp.logger import logger
@@ -12,7 +13,10 @@ from webapp.schema.trait import TraitsResponse
 
 
 @trait_router.get('', response_model=TraitsResponse)
-async def get_all_traits(session: AsyncSession = Depends(get_session)) -> ORJSONResponse:
+async def get_all_traits(
+        session: AsyncSession = Depends(get_session),
+        access_token: JwtTokenT = Depends(jwt_auth.validate_token),
+) -> ORJSONResponse:
     logger.info('Request to GET /traits')
 
     traits = await get_traits(session)

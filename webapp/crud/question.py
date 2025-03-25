@@ -46,14 +46,20 @@ async def count_questions(
 @integration_latency
 async def count_answered_questions(
         session: AsyncSession,
-        answered_query: Subquery,
+        test_id: int,
 ) -> int | None:
-    logger.info('Counting answered questions by trait_ids.')
+    logger.info('Counting answered questions for test with id = %d.', test_id)
 
     return (
         await session.scalar(
             select(func.count())
-            .select_from(answered_query)
+            .select_from(
+                select(Answer.question_id)
+                .join(UserAnswer, UserAnswer.answer_id == Answer.id)
+                .where(UserAnswer.test_id == test_id)
+                .distinct()
+                .subquery()
+            )
         )
     )
 
@@ -76,8 +82,7 @@ async def get_unanswered_questions_with_total(
 
     async with session.begin_nested():
         # Count answered questions
-        answered_subquery = answered_query.subquery()
-        answered = await count_answered_questions(session, answered_subquery)
+        answered = await count_answered_questions(session, test_id)
         # Count total number of questions
         total = await count_questions(session, trait_ids)
 

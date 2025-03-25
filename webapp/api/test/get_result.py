@@ -7,6 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from starlette import status
 
 from webapp.api.test.router import test_router
+from webapp.auth.jwt import JwtTokenT, jwt_auth
 from webapp.crud.user_test import get_user_test_by_id
 from webapp.crud.user_result import get_trait_degree_interpretation
 from webapp.models.talents.user_test import StatusEnum
@@ -20,6 +21,7 @@ from webapp.schema.user_result import ResultInterpretationResponse
 async def get_test_result(
         test_id: int,
         session: AsyncSession = Depends(get_session),
+        access_token: JwtTokenT = Depends(jwt_auth.validate_token),
 ) -> ORJSONResponse:
     logger.info('Request to GET /tests/%d/result', test_id)
 
@@ -28,6 +30,12 @@ async def get_test_result(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Test with id={test_id} not found'
+        )
+
+    if test.user_id != access_token['user_id']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f'You cannot access this test'
         )
 
     if test.status != StatusEnum.finished:

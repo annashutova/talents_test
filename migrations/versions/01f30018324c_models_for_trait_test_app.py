@@ -1,8 +1,8 @@
-"""Initial trait test models
+"""Models for trait test app
 
-Revision ID: 015d24d90cfa
+Revision ID: 01f30018324c
 Revises: 
-Create Date: 2025-03-12 22:07:42.759507
+Create Date: 2025-03-24 12:46:42.921118
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '015d24d90cfa'
+revision: str = '01f30018324c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -40,6 +40,7 @@ def upgrade() -> None:
     sa.Column('last_name', sa.String(length=50), nullable=True),
     sa.Column('surname', sa.String(length=50), nullable=True),
     sa.Column('date_of_birth', sa.DateTime(), nullable=False),
+    sa.Column('password', sa.String(length=300), nullable=False),
     sa.Column('gender', postgresql.ENUM('male', 'female', 'other', name='genderenum', create_type=False), nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_user')),
     sa.UniqueConstraint('email', name=op.f('uq_user_email')),

@@ -34,6 +34,8 @@ class User(Base):
 
     date_of_birth: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
+    password: Mapped[str] = mapped_column(String(300), nullable=False)
+
     gender: Mapped[enum.Enum] = mapped_column(ENUM(GenderEnum), nullable=False)
 
     tests: Mapped[List["UserTest"]] = relationship(

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from webapp.middleware.logger import LogServerMiddleware
 from webapp.middleware.metrics import MetricsMiddleware, metrics
 from webapp.on_startup.logger import setup_logger
+from webapp.api.auth.router import auth_router
 from webapp.api.trait.router import trait_router
 from webapp.api.test.router import test_router
 
@@ -25,6 +26,7 @@ def setup_routers(app: FastAPI) -> None:
     app.add_route('/metrics', metrics)
 
     routers = [
+        auth_router,
         trait_router,
         test_router,
     ]

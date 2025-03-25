@@ -24,7 +24,7 @@ class JwtAuth:
     def create_token(self, user_id: int) -> str:
         access_token = {
             'uid': uuid.uuid4().hex,
-            'exp': datetime.utcnow() + timedelta(days=6),
+            'exp': datetime.utcnow() + timedelta(days=settings.JWT_EXPIRE),
             'user_id': user_id,
         }
         return jwt.encode(access_token, self.secret)

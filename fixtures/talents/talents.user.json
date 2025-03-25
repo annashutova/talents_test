@@ -1,20 +1,20 @@
 [
     {
-        "id": 1,
         "email": "ivan.ivanov@example.com",
         "first_name": "Иван",
         "last_name": "Иванов",
         "surname": "Иванович",
         "date_of_birth": "1990-05-15T00:00:00",
+        "password": "d8578edf8458ce06fbc5bb76a58c5ca4",
         "gender": "male"
     },
     {
-        "id": 2,
-        "email": "anna.smirnova@example.com",
+        "email": "maria.smirnova@example.com",
         "first_name": "Мария",
         "last_name": "Смирнова",
         "surname": "Алексеевна",
         "date_of_birth": "1985-12-22T00:00:00",
+        "password": "d8578edf8458ce06fbc5bb76a58c5ca4",
         "gender": "female"
     }
 ]

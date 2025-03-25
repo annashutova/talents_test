@@ -1,3 +1,3 @@
 from fastapi import APIRouter
 
-trait_router = APIRouter(prefix='/traits')
+trait_router = APIRouter(prefix='/traits', tags=['trait'])

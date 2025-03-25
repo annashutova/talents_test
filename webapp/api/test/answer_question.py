@@ -5,8 +5,10 @@ from fastapi.encoders import jsonable_encoder
 from starlette import status
 
 from webapp.api.test.router import test_router
+from webapp.auth.jwt import JwtTokenT, jwt_auth
 from webapp.crud.user_answer import is_question_answered, post_user_answer
 from webapp.crud.user_test import update_test_status, get_user_test_by_id
+from webapp.crud.user import get_user_by_id
 from webapp.db.postgres import get_session
 from webapp.logger import logger
 from webapp.schema.user_answer import UserAnswerRequest, UserAnswerSchema
@@ -17,6 +19,7 @@ from webapp.models.talents.user_test import StatusEnum
 async def answer_question(
         answer_data: UserAnswerRequest,
         session: AsyncSession = Depends(get_session),
+        access_token: JwtTokenT = Depends(jwt_auth.validate_token),
 ) -> ORJSONResponse:
     logger.info('Request to POST /tests/answer')
 
@@ -25,6 +28,12 @@ async def answer_question(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Test with id={answer_data.test_id} not found'
+        )
+
+    if test.user_id != access_token['user_id']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f'You cannot access this test'
         )
 
     if test.status == StatusEnum.finished:
