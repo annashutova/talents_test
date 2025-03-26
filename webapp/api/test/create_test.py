@@ -15,11 +15,17 @@ from webapp.schema.user_test import StartUserTestRequest, StartUserTestResponse,
 
 @test_router.post('', response_model=StartUserTestResponse)
 async def start_test(
-        # start_test_data: StartUserTestRequest,
+        start_test_data: StartUserTestRequest,
         session: AsyncSession = Depends(get_session),
         access_token: JwtTokenT = Depends(jwt_auth.validate_token),
 ) -> ORJSONResponse:
     logger.info('Request to POST /tests')
+
+    if start_test_data.user_id != access_token['user_id']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f'You cannot start test for user with id = {start_test_data.user_id}'
+        )
 
     user = await get_user_by_id(session, access_token['user_id'])
     if not user:

@@ -10,6 +10,7 @@ from webapp.on_startup.logger import setup_logger
 from webapp.api.auth.router import auth_router
 from webapp.api.trait.router import trait_router
 from webapp.api.test.router import test_router
+from webapp.api.user.router import user_router
 
 
 def setup_middleware(app: FastAPI) -> None:
@@ -27,6 +28,7 @@ def setup_routers(app: FastAPI) -> None:
 
     routers = [
         auth_router,
+        user_router,
         trait_router,
         test_router,
     ]

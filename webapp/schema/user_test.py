@@ -1,5 +1,6 @@
 import enum
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel
 
@@ -19,6 +20,10 @@ class UserTestSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserTestsResponse(BaseModel):
+    tests: List[UserTestSchema]
 
 
 class ProgressEnum(enum.Enum):

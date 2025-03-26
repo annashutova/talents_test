@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Sequence
 
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,6 +17,17 @@ async def get_user_test_by_id(test_id: int, session: AsyncSession) -> UserTest |
             .where(UserTest.id == test_id)
         )
     ).one_or_none()
+
+
+@integration_latency
+async def get_user_tests(session: AsyncSession, user_id: int) -> Sequence[UserTest]:
+    logger.info('Selecting user_tests for user with id = %d', user_id)
+    return (
+        await session.scalars(
+            select(UserTest)
+            .where(UserTest.user_id == user_id)
+        )
+    ).fetchall()
 
 
 @integration_latency
