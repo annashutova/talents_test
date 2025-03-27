@@ -54,6 +54,8 @@ python-multipart = "0.0.20"
 starlette-prometheus = "0.10.0"
 starlette-context = "0.4.0"
 ConfigArgParse = "1.7"
+fastapi-mail = "1.4.2"
+email-validator = "2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 autoflake = "2.2.0"

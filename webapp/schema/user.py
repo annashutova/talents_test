@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, EmailStr
 from typing_extensions import Self
 
 from webapp.models.talents.user import GenderEnum
 
 
 class UserLoginRequest(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
@@ -19,7 +19,7 @@ class UserRegisterRequest(BaseModel):
     first_name: str
     last_name: str
     surname: str
-    email: str
+    email: EmailStr
     date_of_birth: datetime
     gender: GenderEnum
     password: str

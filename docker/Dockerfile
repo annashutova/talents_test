@@ -30,4 +30,4 @@ FROM base AS test
 
 RUN poetry install --no-interaction --no-ansi --with dev
 
-USER 1001
+#USER 1001
