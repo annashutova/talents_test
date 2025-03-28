@@ -1,12 +1,16 @@
+from datetime import datetime, timedelta
+
 from fastapi import Depends, HTTPException
 from fastapi.responses import ORJSONResponse
 from fastapi_mail import MessageSchema, MessageType
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from conf.config import settings
 from webapp.api.invoice.router import invoice_router
 from webapp.auth.jwt import JwtTokenT, jwt_auth
 from webapp.integrations.mail import mail_client
+from webapp.integrations.payment import robokassa
 from webapp.crud.user_test import get_user_test_by_id
 from webapp.crud.user import get_user_by_id
 from webapp.db.postgres import get_session
@@ -50,13 +54,21 @@ async def send_invoice_by_email(
             detail=f'Test with id={invoice_data.test_id} is not finished yet.'
         )
 
-    # TODO: сгенерировать ссылку на оплату теста с test_id
-    # TODO: отправить сгенерированную ссылку на оплату на почту клиента: invoice_data.email | user.email
     # TODO: сохранить в базе invoice со статусом оплаты
 
-    html = """
-    <p>Для получения полного отчета перейдите по ссылке оплаты.</p>
-    <p>link</p> 
+    payment_link = robokassa.generate_open_payment_link(
+        out_sum=10,  # сумма для оплаты отчета
+        result_url='/example',  # url эндпоинта для подтверждения оплаты
+        inv_id=1,  # передается id созданной записи invoice в бд
+        description=f'Счет на оплату отчета по тесту {invoice_data.test_id} от {...}',  # TODO: вставить дату выставления счета
+        recurring=False,
+        email=invoice_data.email if invoice_data.email else user.email,
+        expiration_date=datetime.utcnow() + timedelta(minutes=settings.INVOICE_LINK_EXP),
+    )
+
+    html = f"""
+    <p>Для получения полного отчета перейдите по ссылке оплаты ниже.</p>
+    <a href="{payment_link.url}">>>Ссылка на оплату<<</a> 
     <p>После оплаты вы сможете посмотреть отчет по пройденному тесту в личном кабинете.</p> 
     """
 
@@ -68,4 +80,5 @@ async def send_invoice_by_email(
     )
 
     await mail_client.send_message(message)
+    # TODO: вернуть в ответе созданный объект invoice вместо сообщения
     return ORJSONResponse({"message": "email has been sent"}, status_code=status.HTTP_201_CREATED)

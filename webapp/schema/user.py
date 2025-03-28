@@ -30,3 +30,16 @@ class UserRegisterRequest(BaseModel):
         if self.password != self.retry_password:
             raise ValueError('Passwords do not match')
         return self
+
+
+class UserSchema(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    surname: str
+    email: EmailStr
+    date_of_birth: datetime
+    gender: GenderEnum
+    
+    class Config:
+        from_attributes = True

@@ -1,4 +1,8 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr
+
+from webapp.models.talents.invoice import InvoiceStatusEnum
 
 
 class SendInvoiceRequest(BaseModel):
@@ -7,4 +11,9 @@ class SendInvoiceRequest(BaseModel):
 
 
 class SendInvoiceResponse(BaseModel):
-    message: str
+    id: int
+    amount: float
+    test_id: int
+    status: InvoiceStatusEnum
+    created_at: datetime
+    updated_at: datetime
