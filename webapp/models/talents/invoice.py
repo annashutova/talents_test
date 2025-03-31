@@ -8,6 +8,9 @@ from sqlalchemy.orm import Mapped, mapped_column
 from webapp.models.meta import Base, DEFAULT_SCHEMA
 
 
+INVOICE_AMOUNT = 10
+
+
 class InvoiceStatusEnum(enum.Enum):
     paid = "paid"
     not_paid = "not_paid"

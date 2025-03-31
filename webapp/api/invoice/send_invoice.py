@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException
 from fastapi.responses import ORJSONResponse
+from fastapi.encoders import jsonable_encoder
 from fastapi_mail import MessageSchema, MessageType
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -9,6 +10,7 @@ from starlette import status
 from conf.config import settings
 from webapp.api.invoice.router import invoice_router
 from webapp.auth.jwt import JwtTokenT, jwt_auth
+from webapp.crud.invoice import create_invoice, get_invoice_by_test_id
 from webapp.integrations.mail import mail_client
 from webapp.integrations.payment import robokassa
 from webapp.crud.user_test import get_user_test_by_id
@@ -16,6 +18,7 @@ from webapp.crud.user import get_user_by_id
 from webapp.db.postgres import get_session
 from webapp.logger import logger
 from webapp.models.talents.user_test import StatusEnum
+from webapp.models.talents.invoice import InvoiceStatusEnum
 from webapp.schema.invoice import SendInvoiceRequest, SendInvoiceResponse
 
 
@@ -54,13 +57,20 @@ async def send_invoice_by_email(
             detail=f'Test with id={invoice_data.test_id} is not finished yet.'
         )
 
-    # TODO: сохранить в базе invoice со статусом оплаты
+    invoice = await get_invoice_by_test_id(invoice_data.test_id, session)
+    if invoice and invoice.status == InvoiceStatusEnum.paid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f'Invoice with id={invoice.id} is already paid.'
+        )
+    elif invoice is None:
+        invoice = await create_invoice(invoice_data.test_id, session)
 
     payment_link = robokassa.generate_open_payment_link(
-        out_sum=10,  # сумма для оплаты отчета
-        result_url='/example',  # url эндпоинта для подтверждения оплаты
-        inv_id=1,  # передается id созданной записи invoice в бд
-        description=f'Счет на оплату отчета по тесту {invoice_data.test_id} от {...}',  # TODO: вставить дату выставления счета
+        out_sum=invoice.amount,
+        result_url='/example',
+        inv_id=invoice.id,
+        description=f'Счет на оплату отчета по тесту {invoice_data.test_id} от {invoice.created_at}',
         recurring=False,
         email=invoice_data.email if invoice_data.email else user.email,
         expiration_date=datetime.utcnow() + timedelta(minutes=settings.INVOICE_LINK_EXP),
@@ -80,5 +90,4 @@ async def send_invoice_by_email(
     )
 
     await mail_client.send_message(message)
-    # TODO: вернуть в ответе созданный объект invoice вместо сообщения
-    return ORJSONResponse({"message": "email has been sent"}, status_code=status.HTTP_201_CREATED)
+    return ORJSONResponse(jsonable_encoder(invoice), status_code=status.HTTP_201_CREATED)
