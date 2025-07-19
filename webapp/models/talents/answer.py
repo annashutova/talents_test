@@ -24,7 +24,9 @@ class Answer(Base):
 
     c_param: Mapped[float] = mapped_column(Float, nullable=False, default=0)
 
-    question_id: Mapped[int] = mapped_column(ForeignKey(f"{DEFAULT_SCHEMA}.question.id"), nullable=False)
+    question_id: Mapped[int] = mapped_column(
+        ForeignKey(f"{DEFAULT_SCHEMA}.question.id"), nullable=False
+    )
     question: Mapped["Question"] = relationship(back_populates="answers")
 
     tests: Mapped[List["UserAnswer"]] = relationship(back_populates="answer")

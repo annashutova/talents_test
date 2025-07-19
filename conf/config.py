@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     MERCHANT_LOGIN: str
     PASSWORD1: str
     PASSWORD2: str
+
+    TEST_PASSWORD1: str
+    TEST_PASSWORD2: str
     INVOICE_LINK_EXP: int
 
     LOG_LEVEL: str = 'debug'

@@ -3,8 +3,11 @@ FROM python:3.11 as base
 ENV C_FORCE_ROOT=True
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/code
+ENV TZ=Europe/Moscow
 
 WORKDIR /code
+
+RUN apt-get update && apt-get install -y tzdata
 
 RUN /usr/local/bin/python -m pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir poetry==2.1.1

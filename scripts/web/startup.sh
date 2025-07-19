@@ -6,7 +6,7 @@ echo "Start service"
 python alembic_wrapper.py upgrade head
 
 # load fixtures
-python scripts/load_data.py fixtures/talents/talents.user.json \
+python scripts/load_data.py \
 fixtures/talents/talents.trait.json \
 fixtures/talents/talents.question.json \
 fixtures/talents/talents.answer.json \

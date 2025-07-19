@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from webapp.logger import logger
-from webapp.middleware.metrics import integration_latency
+from webapp.infrastructure.middleware.metrics import integration_latency
 from webapp.models.talents.answer import Answer
 
 

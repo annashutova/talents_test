@@ -17,7 +17,7 @@ class UserAnswer(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
 
-    response_date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
+    response_date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
     test_id: Mapped[int] = mapped_column(ForeignKey(f"{DEFAULT_SCHEMA}.user_test.id", ondelete="CASCADE"))
     test: Mapped["UserTest"] = relationship(back_populates="answers")

@@ -4,9 +4,9 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from webapp.middleware.logger import LogServerMiddleware
-from webapp.middleware.metrics import MetricsMiddleware, metrics
-from webapp.on_startup.logger import setup_logger
+from webapp.infrastructure.middleware.logger import LogServerMiddleware
+from webapp.infrastructure.middleware.metrics import MetricsMiddleware, metrics
+from webapp.infrastructure.on_startup.logger import setup_logger
 from webapp.api.auth.router import auth_router
 from webapp.api.trait.router import trait_router
 from webapp.api.test.router import test_router

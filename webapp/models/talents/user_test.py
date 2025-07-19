@@ -28,7 +28,7 @@ class UserTest(Base):
 
     status: Mapped[enum.Enum] = mapped_column(ENUM(StatusEnum), nullable=False)
 
-    start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
+    start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
     end_time: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 

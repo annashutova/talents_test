@@ -4,7 +4,7 @@ from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from webapp.logger import logger
-from webapp.middleware.metrics import integration_latency
+from webapp.infrastructure.middleware.metrics import integration_latency
 from webapp.models.talents.user_test import UserTest, StatusEnum
 
 
@@ -43,12 +43,12 @@ async def get_unfinished_test(user_id: int, session: AsyncSession) -> UserTest |
 
 
 @integration_latency
-async def post_test(user_id: int, session: AsyncSession) -> UserTest:
+async def post_test(user_id: int, status: StatusEnum, session: AsyncSession) -> UserTest:
     logger.info('Creating new test for user_id = %d', user_id)
 
     result = (await session.scalar(
             insert(UserTest)
-            .values(user_id=user_id, status=StatusEnum.started)
+            .values(user_id=user_id, status=status)
             .returning(UserTest)
     ))
     await session.commit()

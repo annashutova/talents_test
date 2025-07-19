@@ -1,5 +1,6 @@
 .idea
 *.env
+conf/service-account-key.json
 /venv/
 *__pycache__
 .pytest_cache

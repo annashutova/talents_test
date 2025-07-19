@@ -1,6 +1,5 @@
 from fastapi.responses import ORJSONResponse
 
-from webapp.api.prepare_response import _prepare_response
 from webapp.api.system.router import system_router
 from webapp.logger import logger
 from webapp.schema.health import HealthResponse
@@ -12,7 +11,7 @@ from webapp.schema.health import HealthResponse
 )
 async def health_check() -> ORJSONResponse:
     logger.info('Response to /health')
-    return _prepare_response(
+    return ORJSONResponse(
         {
             'status': 'healthy',
         }

@@ -10,22 +10,16 @@ from webapp.crud.user_test import get_unfinished_test, post_test
 from webapp.crud.user import get_user_by_id
 from webapp.db.postgres import get_session
 from webapp.logger import logger
-from webapp.schema.user_test import StartUserTestRequest, StartUserTestResponse, ProgressEnum, UserTestSchema
+from webapp.models.talents.user_test import StatusEnum
+from webapp.schema.user_test import StartUserTestResponse, ProgressEnum, UserTestSchema
 
 
 @test_router.post('', response_model=StartUserTestResponse)
 async def start_test(
-        start_test_data: StartUserTestRequest,
         session: AsyncSession = Depends(get_session),
         access_token: JwtTokenT = Depends(jwt_auth.validate_token),
 ) -> ORJSONResponse:
     logger.info('Request to POST /tests')
-
-    if start_test_data.user_id != access_token['user_id']:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f'You cannot start test for user with id = {start_test_data.user_id}'
-        )
 
     user = await get_user_by_id(session, access_token['user_id'])
     if not user:
@@ -44,7 +38,7 @@ async def start_test(
             status_code=status.HTTP_201_CREATED,
         )
 
-    created_test = await post_test(access_token['user_id'], session)
+    created_test = await post_test(access_token['user_id'], StatusEnum.started, session)
     return ORJSONResponse(
         {
             'test': jsonable_encoder(UserTestSchema.model_validate(created_test)),

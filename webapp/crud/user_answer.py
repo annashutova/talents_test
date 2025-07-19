@@ -1,8 +1,10 @@
+from typing import List, Dict
+
 from sqlalchemy import select, insert, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from webapp.logger import logger
-from webapp.middleware.metrics import integration_latency
+from webapp.infrastructure.middleware.metrics import integration_latency
 from webapp.models.talents.user_answer import UserAnswer
 from webapp.models.talents.answer import Answer
 from webapp.schema.user_answer import UserAnswerRequest
@@ -43,3 +45,14 @@ async def post_user_answer(user_answer_data: UserAnswerRequest, session: AsyncSe
     await session.commit()
 
     return result
+
+
+@integration_latency
+async def balk_insert_answers(user_answer_data: List[Dict[str, int]], session: AsyncSession) -> None:
+    logger.info('Inserting all user answers for test_id = %d', user_answer_data[0]['test_id'])
+
+    await session.execute(
+        insert(UserAnswer),
+        user_answer_data,
+    )
+    await session.commit()

@@ -11,8 +11,8 @@ from conf.config import settings
 from webapp.api.invoice.router import invoice_router
 from webapp.auth.jwt import JwtTokenT, jwt_auth
 from webapp.crud.invoice import create_invoice, get_invoice_by_test_id
-from webapp.integrations.mail import mail_client
-from webapp.integrations.payment import robokassa
+from webapp.infrastructure.integrations.mail import mail_client
+from webapp.infrastructure.integrations.payment import robokassa
 from webapp.crud.user_test import get_user_test_by_id
 from webapp.crud.user import get_user_by_id
 from webapp.db.postgres import get_session
@@ -68,12 +68,12 @@ async def send_invoice_by_email(
 
     payment_link = robokassa.generate_open_payment_link(
         out_sum=invoice.amount,
-        result_url='/example',
+        result_url=f'https://clever-inherently-earwig.ngrok-free.app/invoice/confirm',
         inv_id=invoice.id,
         description=f'Счет на оплату отчета по тесту {invoice_data.test_id} от {invoice.created_at}',
         recurring=False,
         email=invoice_data.email if invoice_data.email else user.email,
-        expiration_date=datetime.utcnow() + timedelta(minutes=settings.INVOICE_LINK_EXP),
+        expiration_date=datetime.now() + timedelta(minutes=settings.INVOICE_LINK_EXP),
     )
 
     html = f"""

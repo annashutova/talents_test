@@ -61,7 +61,7 @@ async def finish_test(
 
     test_data = {
         "status": StatusEnum.finished,
-        "end_time": datetime.utcnow()
+        "end_time": datetime.now()
     }
     await post_test_result(test_id, session)
     updated_test = await update_test(test_id, test_data, session)

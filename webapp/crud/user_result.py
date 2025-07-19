@@ -1,11 +1,11 @@
-from typing import Tuple, Sequence, Any
+from typing import Tuple, Sequence
 
 from sqlalchemy import select, insert, func, Row
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import and_
 
 from webapp.logger import logger
-from webapp.middleware.metrics import integration_latency
+from webapp.infrastructure.middleware.metrics import integration_latency
 from webapp.models.talents.question import Question
 from webapp.models.talents.trait import Trait
 from webapp.models.talents.answer import Answer
@@ -15,11 +15,18 @@ from webapp.models.talents.interpretation import Interpretation, TraitDegreeEnum
 
 
 @integration_latency
-async def get_parameters_sum(test_id: int, session: AsyncSession) -> Sequence[Row[Tuple[float, float, float, int]]]:
+async def get_parameters_sum(
+        test_id: int, session: AsyncSession
+) -> Sequence[Row[Tuple[float, float, float, int]]]:
     logger.info('Summarizing a, b, c params for test with id = %d', test_id)
 
     return (await session.execute(
-        select(func.sum(Answer.a_param), func.sum(Answer.b_param), func.sum(Answer.c_param), Question.trait_id)
+        select(
+            func.sum(Answer.a_param),
+            func.sum(Answer.b_param),
+            func.sum(Answer.c_param),
+            Question.trait_id
+        )
         .join(Answer.question)
         .join(UserAnswer, UserAnswer.answer_id == Answer.id)
         .where(UserAnswer.test_id == test_id)

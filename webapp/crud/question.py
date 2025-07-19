@@ -1,11 +1,11 @@
 from typing import List, Tuple
 
-from sqlalchemy import select, func, Subquery
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from webapp.logger import logger
-from webapp.middleware.metrics import integration_latency
+from webapp.infrastructure.middleware.metrics import integration_latency
 from webapp.models.talents.question import Question
 from webapp.models.talents.answer import Answer
 from webapp.models.talents.user_answer import UserAnswer

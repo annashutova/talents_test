@@ -26,8 +26,8 @@ class Invoice(Base):
 
     status: Mapped[enum.Enum] = mapped_column(ENUM(InvoiceStatusEnum), nullable=False)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
-    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=True, onupdate=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=True, onupdate=datetime.now)
 
     test_id: Mapped[int] = mapped_column(ForeignKey(f"{DEFAULT_SCHEMA}.user_test.id"), nullable=False, unique=True)
