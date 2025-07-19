@@ -103,7 +103,6 @@ def upgrade() -> None:
     sa.Column('test_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['test_id'], ['talents.user_test.id'], name=op.f('fk_invoice_test_id_user_test')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_invoice')),
-    sa.UniqueConstraint('amount', name=op.f('uq_invoice_amount')),
     sa.UniqueConstraint('test_id', name=op.f('uq_invoice_test_id')),
     schema='talents'
     )

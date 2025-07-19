@@ -3,7 +3,7 @@ import asyncio
 import argparse
 from datetime import datetime
 from pathlib import Path
-from typing import List, Any
+from typing import List
 
 from sqlalchemy import insert
 

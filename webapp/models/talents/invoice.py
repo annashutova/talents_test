@@ -22,7 +22,7 @@ class Invoice(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
 
-    amount: Mapped[float] = mapped_column(Double, nullable=False, unique=True)
+    amount: Mapped[float] = mapped_column(Double, nullable=False)
 
     status: Mapped[enum.Enum] = mapped_column(ENUM(InvoiceStatusEnum), nullable=False)
 
