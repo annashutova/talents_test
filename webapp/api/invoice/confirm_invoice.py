@@ -1,3 +1,6 @@
+import tempfile
+import os
+
 from fastapi import Depends, HTTPException
 from fastapi.responses import ORJSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,13 +13,14 @@ from webapp.infrastructure.integrations.google_drive import download_pdf_by_name
 from webapp.infrastructure.integrations.payment import robokassa
 from webapp.infrastructure.integrations.mail import mail_client
 from webapp.db.postgres import get_session
+from webapp.infrastructure.middleware.get_form_data import get_invoice_data_from_form
 from webapp.logger import logger
 from webapp.schema.invoice import ConfirmInvoiceRequest
 
 
 @invoice_router.post('/confirm')
 async def confirm_invoice(
-        invoice_data: ConfirmInvoiceRequest,
+        invoice_data: ConfirmInvoiceRequest = Depends(get_invoice_data_from_form),
         session: AsyncSession = Depends(get_session),
 ) -> ORJSONResponse:
     logger.info('Request to POST /invoice/confirm')
@@ -72,8 +76,8 @@ async def confirm_invoice(
 
 
 @invoice_router.post('/confirm/v2')
-async def confirm_invoice(
-        invoice_data: ConfirmInvoiceRequest,
+async def confirm_invoice_v2(
+        invoice_data: ConfirmInvoiceRequest = Depends(get_invoice_data_from_form),
         session: AsyncSession = Depends(get_session),
 ) -> ORJSONResponse:
     logger.info('Request to POST /invoice/confirm/v2')
@@ -92,7 +96,7 @@ async def confirm_invoice(
         message = f'OK{invoice_data.invoice_id}'
         response_status = status.HTTP_200_OK
 
-        pdf_filename = f"report_{invoice_data.invoice_id}.pdf"
+        pdf_filename = f"Вася.pdf"
 
         try:
             pdf_bytes = await download_pdf_by_name(pdf_filename)
@@ -100,16 +104,19 @@ async def confirm_invoice(
             logger.error(f"Failed to download PDF: {e}")
             raise HTTPException(500, "Report not found")
 
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
+            tmp.write(pdf_bytes)
+            tmp_path = tmp.name
+
         email = MessageSchema(
             subject="Ваш отчет FindTalents",
-            recipients=[invoice_data.email],
+            recipients=['annashut@inbox.ru'],
             body="Отчет во вложении",
-            attachments=[{
-                "file": pdf_bytes,
-                "filename": pdf_filename
-            }]
+            attachments=[tmp_path],
+            subtype=MessageType.plain,
         )
         await mail_client.send_message(email)
+        os.unlink(tmp_path)
 
         await update_invoice_status(invoice_data.invoice_id, session)
     else:
@@ -126,7 +133,7 @@ async def confirm_invoice(
         """
         email = MessageSchema(
             subject="Оплата отчета findtalents.ru",
-            recipients=[invoice_data.email],
+            recipients=['annashut@inbox.ru'],
             body=html,
             subtype=MessageType.html
         )

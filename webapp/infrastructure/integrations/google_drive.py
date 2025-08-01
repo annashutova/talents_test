@@ -2,8 +2,13 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
+from pathlib import Path
 
-SERVICE_ACCOUNT_FILE = 'path/to/service-account-key.json'
+from conf.config import settings
+
+
+BASE_DIR = Path(__file__).parent.parent.parent.parent.resolve()
+SERVICE_ACCOUNT_FILE = f'{BASE_DIR}/conf/service-account-key.json'
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
 
@@ -18,7 +23,7 @@ async def download_pdf_by_name(filename: str) -> bytes:
     service = get_drive_service()
 
     # Формируем запрос для поиска файла
-    query = f"name = '{filename}' and mimeType = 'application/pdf'"
+    query = f"name = '{filename}' and mimeType = 'application/pdf' and '{settings.GOOGLE_DRIVE_FOLDER_ID}' in parents"
 
     results = service.files().list(
         q=query,

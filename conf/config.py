@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     TEST_PASSWORD2: str
     INVOICE_LINK_EXP: int
 
+    GOOGLE_DRIVE_FOLDER_ID: str
+
     LOG_LEVEL: str = 'debug'
 
 

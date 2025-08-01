@@ -40,7 +40,7 @@ async def get_invoice_by_test_id(test_id: int, session: AsyncSession) -> Invoice
 @integration_latency
 async def update_invoice_status(invoice_id: int, session: AsyncSession) -> None:
     logger.info('Updating invoice status with id = %d.', invoice_id)
-    await session.scalars(
+    await session.execute(
             update(Invoice)
             .where(Invoice.id == invoice_id)
             .values(status=InvoiceStatusEnum.paid)

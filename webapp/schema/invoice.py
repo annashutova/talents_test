@@ -1,3 +1,4 @@
+from decimal import Decimal
 from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field
@@ -20,10 +21,10 @@ class SendInvoiceResponse(BaseModel):
 
 
 class ConfirmInvoiceRequest(BaseModel):
-    out_sum: float = Field(validation_alias='OutSum')
-    invoice_id: int = Field(validation_alias='InvId')
-    fee: float = Field(validation_alias='Fee')
-    email: EmailStr | None = Field(validation_alias='EMail')
-    signature: str = Field(validation_alias='SignatureValue')
-    payment_method: str = Field(validation_alias='PaymentMethod')
-    currency: str = Field(validation_alias='IncCurrLabel')
+    out_sum: Decimal
+    invoice_id: int
+    fee: float
+    email: EmailStr | str
+    signature: str
+    payment_method: str
+    currency: str
