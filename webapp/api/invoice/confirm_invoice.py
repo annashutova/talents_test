@@ -8,13 +8,16 @@ from fastapi_mail import MessageSchema, MessageType
 from starlette import status
 
 from webapp.api.invoice.router import invoice_router
-from webapp.crud.invoice import update_invoice_status
-from webapp.infrastructure.integrations.google_drive import download_pdf_by_name
+from webapp.crud.invoice import update_invoice_status, get_test_id_by_invoice_id
+from webapp.crud.user import get_user_by_email
+from webapp.crud.user_result import parse_test_result
 from webapp.infrastructure.integrations.payment import robokassa
 from webapp.infrastructure.integrations.mail import mail_client
 from webapp.db.postgres import get_session
 from webapp.infrastructure.middleware.get_form_data import get_invoice_data_from_form
 from webapp.logger import logger
+from webapp.models.talents.user import GenderEnum
+from webapp.reports.generate_report import generate_personality_report
 from webapp.schema.invoice import ConfirmInvoiceRequest
 
 
@@ -96,13 +99,19 @@ async def confirm_invoice_v2(
         message = f'OK{invoice_data.invoice_id}'
         response_status = status.HTTP_200_OK
 
-        pdf_filename = f"Вася.pdf"
+        user = await get_user_by_email(session, invoice_data.email)
+        test_id = await get_test_id_by_invoice_id(invoice_data.invoice_id, session)
+
+        report_data = await parse_test_result(test_id, session)
+        report_data['name'] = f'{user.last_name} {user.first_name} {user.surname if user.surname else ""}'
+        report_data['gender'] = 'Женский' if user.gender == GenderEnum.female else 'Мужской'
+        report_data['date_of_birth'] = user.date_of_birth
 
         try:
-            pdf_bytes = await download_pdf_by_name(pdf_filename)
+            pdf_bytes = generate_personality_report(report_data)
         except Exception as e:
-            logger.error(f"Failed to download PDF: {e}")
-            raise HTTPException(500, "Report not found")
+            logger.error(f"Failed to generate PDF: {e}")
+            raise HTTPException(500, "Report could not be generated")
 
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
             tmp.write(pdf_bytes)
@@ -110,8 +119,8 @@ async def confirm_invoice_v2(
 
         email = MessageSchema(
             subject="Ваш отчет FindTalents",
-            recipients=['annashut@inbox.ru'],
-            body="Отчет во вложении",
+            recipients=[invoice_data.email],
+            body="Спасибо, что воспользовались нашим сервисом! Можете посмотреть свой отчет во вложении.",
             attachments=[tmp_path],
             subtype=MessageType.plain,
         )
@@ -133,7 +142,7 @@ async def confirm_invoice_v2(
         """
         email = MessageSchema(
             subject="Оплата отчета findtalents.ru",
-            recipients=['annashut@inbox.ru'],
+            recipients=[invoice_data.email],
             body=html,
             subtype=MessageType.html
         )

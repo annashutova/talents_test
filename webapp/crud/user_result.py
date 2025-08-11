@@ -46,9 +46,9 @@ async def post_test_result(test_id: int, session: AsyncSession) -> Sequence[User
             {
                 'trait_id': record[3],
                 'test_id': test_id,
-                'a_param': record[0],
-                'b_param': record[1],
-                'c_param': record[2],
+                'a_param': record[0] / 14,
+                'b_param': record[1] / 14,
+                'c_param': record[2] / 14,
             }
         )
 
@@ -64,7 +64,7 @@ async def get_trait_degree_interpretation(
         trait_degree: TraitDegreeEnum,
         session: AsyncSession
 ) -> Sequence[Row[Tuple[int, str, float, str, str]]]:
-    logger.info('Selecting result interpretation for test with id = %d', test_id)
+    logger.info('Selecting result interpretation for test %d and trait_degree = %s', test_id, trait_degree)
 
     param = None
     trait_degree_title = None
@@ -99,3 +99,22 @@ async def get_trait_degree_interpretation(
         )
 
     )).fetchall()
+
+
+async def parse_test_result(test_id: int, session: AsyncSession) -> dict:
+    result_interpretation = {}
+    for trait_degree in TraitDegreeEnum:
+        trait_interpretations = await get_trait_degree_interpretation(test_id, trait_degree, session)
+        for trait_interpretation in trait_interpretations:
+            if result_interpretation.get(f'trait_{trait_interpretation[0]}') is None:
+                result_interpretation[f'trait_{trait_interpretation[0]}'] = {}
+            trait_data = result_interpretation[f'trait_{trait_interpretation[0]}']
+            trait_data['trait_id'] = trait_interpretation[0]
+            trait_data[trait_degree.value] = {
+                'title': trait_interpretation[1],
+                'percent': trait_interpretation[2] * 100 // 1,
+                'short_description': trait_interpretation[3],
+                'long_description': trait_interpretation[4],
+            }
+
+    return {'traits': (list(result_interpretation.values()))}

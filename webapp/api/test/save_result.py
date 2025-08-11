@@ -1,12 +1,10 @@
 import uuid
-from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException
 from fastapi.responses import ORJSONResponse
 from fastapi_mail import MessageType, MessageSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from conf.config import settings
 from webapp.api.test.router import test_router
 from webapp.auth.password import hash_password
 from webapp.crud.invoice import create_invoice
@@ -16,7 +14,7 @@ from webapp.crud.user_result import post_test_result
 from webapp.crud.user_test import post_test
 from webapp.db.postgres import get_session
 from webapp.infrastructure.integrations.mail import mail_client
-from webapp.infrastructure.integrations.payment import robokassa
+from webapp.infrastructure.integrations.payment import generate_payment_link
 from webapp.logger import logger
 from webapp.models.talents.user import GenderEnum
 from webapp.schema.answer import Responses
@@ -82,19 +80,12 @@ async def answer_question(
         logger.error(f"Failed to create invoice for test with id = {test.id}: {error}")
         raise HTTPException(500, "Failed to create invoice")
 
-    payment_link = robokassa.generate_open_payment_link(
-        out_sum=invoice.amount,
-        result_url='https://clever-inherently-earwig.ngrok-free.app/invoice/confirm/v2',
-        inv_id=invoice.id,
-        description=f'Счет на оплату отчета по тесту {test.id} от {invoice.created_at}',
-        recurring=False,
-        email=response_data.email,
-        expiration_date=datetime.now() + timedelta(minutes=settings.INVOICE_LINK_EXP),
-    )
+    url = generate_payment_link(invoice.amount, invoice.id, test.id, response_data.email)
+    logger.info(f'Payment url: {url}')
 
     html = f"""
         <p>Для получения полного отчета перейдите по ссылке оплаты ниже.</p>
-        <a href="{payment_link.url}">>>Ссылка на оплату<<</a> 
+        <a href="{url}">>>Ссылка на оплату<<</a> 
         <p>После оплаты вам на почту придет отчет с результатами тестирования.</p> 
         """
 

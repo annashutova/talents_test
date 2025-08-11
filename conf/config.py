@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     TEST_PASSWORD1: str
     TEST_PASSWORD2: str
+    TEST_EMAIL: str
     INVOICE_LINK_EXP: int
 
     GOOGLE_DRIVE_FOLDER_ID: str

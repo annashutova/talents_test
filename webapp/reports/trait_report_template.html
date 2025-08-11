@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личностный отчёт</title>
+    <style>
+        body {
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .personal-info {
+            margin-bottom: 30px;
+        }
+        .trait-section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .trait-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .trait-degree {
+            margin-bottom: 15px;
+        }
+        .degree-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .trait-value {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .value-text {
+            width: 100px;
+            font-size: 0.9em;
+        }
+        .progress-container {
+            flex-grow: 1;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-left: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+        }
+        .lack-bar {
+            background-color: #ffe941;
+        }
+        .virtue-bar {
+            background-color: #2ecc71;
+        }
+        .excess-bar {
+            background-color: #e74c3c;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .trait-explanation {
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Личностный отчёт</h1>
+    </div>
+
+    <div class="personal-info">
+        <p><strong>Имя:</strong> {{ name }}</p>
+        <p><strong>Дата рождения:</strong> {{ date_of_birth }}</p>
+        <p><strong>Пол:</strong> {{ gender }}</p>
+    </div>
+
+    {% for trait in traits %}
+        <div class="trait-section">
+            <div class="trait-name">{{ trait.trait_virtue.title }}</div>
+    
+            <div class="trait-degree">
+                <div class="degree-title">{{ trait.trait_lack.title }}</div>
+                <div class="trait-value">
+                    <span class="value-text">Значение: {{ trait.trait_lack.percent }}%</span>
+                    <div class="progress-container">
+                        <div class="progress-bar lack-bar" style="width: {{ trait.trait_lack.percent }}%"></div>
+                    </div>
+                </div>
+                <div class="trait-explanation">{{ trait.trait_lack.long_description }}</div>
+            </div>
+    
+            <div class="trait-degree">
+                <div class="degree-title">{{ trait.trait_virtue.title }}</div>
+                <div class="trait-value">
+                    <span class="value-text">Значение: {{ trait.trait_virtue.percent }}%</span>
+                    <div class="progress-container">
+                        <div class="progress-bar virtue-bar" style="width: {{ trait.trait_virtue.percent }}%"></div>
+                    </div>
+                </div>
+                <div class="trait-explanation">{{ trait.trait_virtue.long_description }}</div>
+            </div>
+    
+            <div class="trait-degree">
+                <div class="degree-title">{{ trait.trait_excess.title }}</div>
+                <div class="trait-value">
+                    <span class="value-text">Значение: {{ trait.trait_excess.percent }}%</span>
+                    <div class="progress-container">
+                        <div class="progress-bar excess-bar" style="width: {{ trait.trait_excess.percent }}%"></div>
+                    </div>
+                </div>
+                <div class="trait-explanation">{{ trait.trait_excess.long_description }}</div>
+            </div>
+        </div>
+
+    <div class="page-break"></div>
+    {% endfor %}
+
+</body>
+</html>

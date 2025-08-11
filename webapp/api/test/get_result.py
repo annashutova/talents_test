@@ -46,8 +46,8 @@ async def get_test_result(
 
     result_interpretation = {}
     for trait_degree in TraitDegreeEnum:
-        traits_interpretation = await get_trait_degree_interpretation(test_id, trait_degree, session)
-        for traits_interpretation in traits_interpretation:
+        trait_interpretations = await get_trait_degree_interpretation(test_id, trait_degree, session)
+        for traits_interpretation in trait_interpretations:
             if result_interpretation.get(f'trait_{traits_interpretation[0]}') is None:
                 result_interpretation[f'trait_{traits_interpretation[0]}'] = {}
             trait_data = result_interpretation[f'trait_{traits_interpretation[0]}']
