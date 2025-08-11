@@ -18,6 +18,9 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --without dev \
     && echo yes | poetry cache clear . --all
 
+RUN adduser --disabled-password appuser
+USER appuser
+
 
 ## stand image
 #FROM base AS prod

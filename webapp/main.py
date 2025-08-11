@@ -8,6 +8,7 @@ from webapp.infrastructure.middleware.logger import LogServerMiddleware
 from webapp.infrastructure.middleware.metrics import MetricsMiddleware, metrics
 from webapp.infrastructure.on_startup.logger import setup_logger
 from webapp.api.auth.router import auth_router
+from webapp.api.system.router import system_router
 from webapp.api.trait.router import trait_router
 from webapp.api.test.router import test_router
 from webapp.api.user.router import user_router
@@ -28,6 +29,7 @@ def setup_routers(app: FastAPI) -> None:
     app.add_route('/metrics', metrics)
 
     routers = [
+        system_router,
         auth_router,
         user_router,
         trait_router,

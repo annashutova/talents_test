@@ -1,28 +1,33 @@
 version: '3.9'
 
 services:
-#  nginx:
-#    build:
-#      dockerfile: nginx/Dockerfile
-#      context: .
-#    ports:
-#      - "80:80"
-#    depends_on:
-#      web:
-#        condition: service_healthy
+  nginx:
+    build:
+      dockerfile: nginx/Dockerfile
+      context: .
+    ports:
+      - "80:80"
+    depends_on:
+      web:
+        condition: service_healthy
 
   web:
     build:
       dockerfile: docker/Dockerfile
       context: .
     command: scripts/web/startup.sh -m -l
-    restart: on-failure
+    restart: unless-stopped
     env_file:
       - ./conf/.env
     volumes:
       - .:/code
-    ports:
-      - "8100:8100"
+    expose:
+      - "8100"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8100/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     depends_on:
       database:
         condition: service_healthy
@@ -33,9 +38,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=main_db
-    restart: on-failure
-    ports:
-      - "5432:5432"
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "main_db" ]
       interval: 5s
