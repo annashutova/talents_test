@@ -5,39 +5,9 @@
     "trait_excess": "Скупость"
   },
   {
-    "trait_lack": "Несдержанность",
-    "trait_virtue": "Самоконтроль",
-    "trait_excess": "Ригидность"
-  },
-  {
-    "trait_lack": "Тщеславие",
-    "trait_virtue": "Скромность",
-    "trait_excess": "Самоуничижение"
-  },
-  {
-    "trait_lack": "Привередливость",
-    "trait_virtue": "Неприхотливость",
-    "trait_excess": "Неразборчивость"
-  },
-  {
     "trait_lack": "Неорганизованность",
     "trait_virtue": "Организованность",
     "trait_excess": "Педантизм"
-  },
-  {
-    "trait_lack": "Нетерпеливость",
-    "trait_virtue": "Терпение",
-    "trait_excess": "Чрезмерная терпимость"
-  },
-  {
-    "trait_lack": "Бесцельность",
-    "trait_virtue": "Целеустремленность",
-    "trait_excess": "Зацикленность"
-  },
-  {
-    "trait_lack": "Уязвимость",
-    "trait_virtue": "Стрессоустойчивость",
-    "trait_excess": "Отстраненность"
   },
   {
     "trait_lack": "Небрежность",
@@ -45,39 +15,9 @@
     "trait_excess": "Перфекционизм"
   },
   {
-    "trait_lack": "Нетрезвость",
-    "trait_virtue": "Трезвость",
-    "trait_excess": "Мнительная трезвость"
-  },
-  {
-    "trait_lack": "Неверность",
-    "trait_virtue": "Верность",
-    "trait_excess": "Преданность"
-  },
-  {
-    "trait_lack": "Уныние",
-    "trait_virtue": "Жизнерадостность",
-    "trait_excess": "Легкомысленность"
-  },
-  {
     "trait_lack": "Хамство",
     "trait_virtue": "Уважение",
     "trait_excess": "Возвеличивание"
-  },
-  {
-    "trait_lack": "Лицемерие",
-    "trait_virtue": "Правдивость",
-    "trait_excess": "Излишняя откровенность"
-  },
-  {
-    "trait_lack": "Беззаконие",
-    "trait_virtue": "Справедливость",
-    "trait_excess": "Догматизм"
-  },
-  {
-    "trait_lack": "Бессовестность",
-    "trait_virtue": "Совестливость",
-    "trait_excess": "Самобичевание"
   },
   {
     "trait_lack": "Трусость",
@@ -85,39 +25,9 @@
     "trait_excess": "Безрассудство"
   },
   {
-    "trait_lack": "Слабость",
-    "trait_virtue": "Стойкость",
-    "trait_excess": "Упрямство"
-  },
-  {
-    "trait_lack": "Неуверенность",
-    "trait_virtue": "Уверенность в себе",
-    "trait_excess": "Самоуверенность"
-  },
-  {
-    "trait_lack": "Безответственность",
-    "trait_virtue": "Ответственность",
-    "trait_excess": "Гиперответственность"
-  },
-  {
     "trait_lack": "Враждебность",
     "trait_virtue": "Доброжелательность",
     "trait_excess": "Навязчивость"
-  },
-  {
-    "trait_lack": "Бесчувственность",
-    "trait_virtue": "Эмпатия",
-    "trait_excess": "Гиперчувствительность"
-  },
-  {
-    "trait_lack": "Замкнутость",
-    "trait_virtue": "Коммуникабельность",
-    "trait_excess": "Навязчивость"
-  },
-  {
-    "trait_lack": "Мелочность",
-    "trait_virtue": "Великодушие",
-    "trait_excess": "Всепрощение"
   },
   {
     "trait_lack": "Леность",
@@ -125,14 +35,104 @@
     "trait_excess": "Трудоголизм"
   },
   {
+    "trait_lack": "Несдержанность",
+    "trait_virtue": "Самоконтроль",
+    "trait_excess": "Ригидность"
+  },
+  {
+    "trait_lack": "Слабость",
+    "trait_virtue": "Стойкость",
+    "trait_excess": "Упрямство"
+  },
+  {
+    "trait_lack": "Нетрезвость",
+    "trait_virtue": "Трезвость",
+    "trait_excess": "Мнительная трезвость"
+  },
+  {
+    "trait_lack": "Лицемерие",
+    "trait_virtue": "Правдивость",
+    "trait_excess": "Излишняя откровенность"
+  },
+  {
+    "trait_lack": "Нетерпеливость",
+    "trait_virtue": "Терпение",
+    "trait_excess": "Чрезмерная терпимость"
+  },
+  {
+    "trait_lack": "Бесчувственность",
+    "trait_virtue": "Эмпатия",
+    "trait_excess": "Гиперчувствительность"
+  },
+  {
     "trait_lack": "Безразличие",
     "trait_virtue": "Любознательность",
     "trait_excess": "Излишняя дотошность"
   },
   {
+    "trait_lack": "Тщеславие",
+    "trait_virtue": "Скромность",
+    "trait_excess": "Самоуничижение"
+  },
+  {
+    "trait_lack": "Бесцельность",
+    "trait_virtue": "Целеустремленность",
+    "trait_excess": "Зацикленность"
+  },
+  {
+    "trait_lack": "Неверность",
+    "trait_virtue": "Верность",
+    "trait_excess": "Преданность"
+  },
+  {
+    "trait_lack": "Беззаконие",
+    "trait_virtue": "Справедливость",
+    "trait_excess": "Догматизм"
+  },
+  {
+    "trait_lack": "Неуверенность",
+    "trait_virtue": "Уверенность в себе",
+    "trait_excess": "Самоуверенность"
+  },
+  {
+    "trait_lack": "Замкнутость",
+    "trait_virtue": "Коммуникабельность",
+    "trait_excess": "Навязчивость"
+  },
+  {
     "trait_lack": "Легковерие",
     "trait_virtue": "Критическое мышление",
     "trait_excess": "Скептицизм/Излишний анализ"
+  },
+  {
+    "trait_lack": "Привередливость",
+    "trait_virtue": "Неприхотливость",
+    "trait_excess": "Неразборчивость"
+  },
+  {
+    "trait_lack": "Уязвимость",
+    "trait_virtue": "Стрессоустойчивость",
+    "trait_excess": "Отстраненность"
+  },
+  {
+    "trait_lack": "Уныние",
+    "trait_virtue": "Жизнерадостность",
+    "trait_excess": "Легкомысленность"
+  },
+  {
+    "trait_lack": "Бессовестность",
+    "trait_virtue": "Совестливость",
+    "trait_excess": "Самобичевание"
+  },
+  {
+    "trait_lack": "Безответственность",
+    "trait_virtue": "Ответственность",
+    "trait_excess": "Гиперответственность"
+  },
+  {
+    "trait_lack": "Мелочность",
+    "trait_virtue": "Великодушие",
+    "trait_excess": "Всепрощение"
   },
   {
     "trait_lack": "Безрассудство",
