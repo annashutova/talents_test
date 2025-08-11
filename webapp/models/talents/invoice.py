@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from webapp.models.meta import Base, DEFAULT_SCHEMA
 
 
-INVOICE_AMOUNT = 10
+INVOICE_AMOUNT = 495  # стоимость 1 полного прохождения тестирования соискателем
 
 
 class InvoiceStatusEnum(enum.Enum):
