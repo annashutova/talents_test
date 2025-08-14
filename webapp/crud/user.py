@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from webapp.logger import logger
 from webapp.infrastructure.middleware.metrics import integration_latency
 from webapp.models.talents.user import User
+from webapp.models.talents.user_test import UserTest
 from webapp.schema.user import UserLoginRequest, UserRegisterRequest
 from webapp.auth.password import hash_password
 
@@ -40,6 +41,18 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
         await session.scalars(
             select(User)
             .where(User.id == user_id)
+        )
+    ).one_or_none()
+
+
+@integration_latency
+async def get_user_by_test_id(session: AsyncSession, test_id: int) -> User | None:
+    logger.info('Selecting user by test_id: %d', test_id)
+    return (
+        await session.scalars(
+            select(User)
+            .join(UserTest)
+            .where(UserTest.id == test_id)
         )
     ).one_or_none()
 

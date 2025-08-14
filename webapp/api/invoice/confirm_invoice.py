@@ -9,7 +9,7 @@ from starlette import status
 
 from webapp.api.invoice.router import invoice_router
 from webapp.crud.invoice import update_invoice_status, get_test_id_by_invoice_id
-from webapp.crud.user import get_user_by_email
+from webapp.crud.user import get_user_by_test_id
 from webapp.crud.user_result import parse_test_result
 from webapp.infrastructure.integrations.payment import robokassa
 from webapp.infrastructure.integrations.mail import mail_client
@@ -99,19 +99,38 @@ async def confirm_invoice_v2(
         message = f'OK{invoice_data.invoice_id}'
         response_status = status.HTTP_200_OK
 
-        user = await get_user_by_email(session, invoice_data.email)
-        test_id = await get_test_id_by_invoice_id(invoice_data.invoice_id, session)
+        try:
+            test_id = await get_test_id_by_invoice_id(invoice_data.invoice_id, session)
+        except Exception as error:
+            logger.error('Error occured while retrieving test id: $s', str(error))
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Report could not be generated")
 
-        report_data = await parse_test_result(test_id, session)
+        try:
+            user = await get_user_by_test_id(session, test_id)
+        except Exception as error:
+            logger.error('Error occured while retrieving user: $s', str(error))
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Report could not be generated")
+
+        try:
+            await update_invoice_status(invoice_data.invoice_id, session)
+        except Exception as error:
+            logger.error("Failed to update invoice status: %s", str(error))
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Report could not be generated")
+
+        try:
+            report_data = await parse_test_result(test_id, session)
+        except Exception as error:
+            logger.error('Error occured while retrieving test results for report: $s', str(error))
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Report could not be generated")
         report_data['name'] = f'{user.last_name} {user.first_name} {user.surname if user.surname else ""}'
         report_data['gender'] = 'Женский' if user.gender == GenderEnum.female else 'Мужской'
         report_data['date_of_birth'] = user.date_of_birth
 
         try:
             pdf_bytes = generate_personality_report(report_data)
-        except Exception as e:
-            logger.error(f"Failed to generate PDF: {e}")
-            raise HTTPException(500, "Report could not be generated")
+        except Exception as error:
+            logger.error(f"Failed to generate PDF: {str(error)}")
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Report could not be generated")
 
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
             tmp.write(pdf_bytes)
@@ -126,8 +145,6 @@ async def confirm_invoice_v2(
         )
         await mail_client.send_message(email)
         os.unlink(tmp_path)
-
-        await update_invoice_status(invoice_data.invoice_id, session)
     else:
         logger.error(
             'Invoice with id = %d Failed',
