@@ -15,7 +15,7 @@ robokassa = Robokassa(
     password1=settings.TEST_PASSWORD1,
     password2=settings.TEST_PASSWORD2,
     algorithm=HashAlgorithm.md5,
-    is_test=True,
+    is_test=False,
 )
 
 
@@ -40,7 +40,7 @@ def generate_payment_link(out_sum: float, invoice_id: int, test_id: int, user_em
         'ExpirationDate': datetime.now() + timedelta(minutes=settings.INVOICE_LINK_EXP),
         'Email': user_email,
         'SignatureValue': signature,
-        'IsTest': 1
+        'IsTest': 0
     }
 
     return f'{ROBOKASSA_PAYMENT_URL}?{parse.urlencode(data)}'
